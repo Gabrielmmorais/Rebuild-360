@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+    nginx:
+        restart: "always"
+        image: "rebuild-360/nginx:360"
+        ports:
+            - "8080:8080"
+        links:
+            - wordpress-1
+            - wordpress-2
+    
+    db:
+      image: mysql:latest
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        -  MYSQL_DATABASE=wordpress
+      volumes:
+        - db_data:/var/lib/mysql
+    
+    wordpress-1:
+        image: wordpress:6.1
+        environment:
+          WORDPRESS_DB_HOST: db
+          WORDPRESS_DB_USER: root
+          WORDPRESS_DB_PASSWORD: root
+          WORDPRESS_DB_NAME: wordpress
+        ports:
+          - '80:80'
+        volumes:
+          -  ./src/plugins:/var/www/tml/wp-content/plugins
+          - ./src/themes:/var/www/html/wp-content/themes
+        links:
+          - db
+    
+    wordpress-2:
+        image: wordpress:6.1
+        environment:
+          WORDPRESS_DB_HOST: db
+          WORDPRESS_DB_USER: root
+          WORDPRESS_DB_PASSWORD: root
+          WORDPRESS_DB_NAME: wordpress
+        ports:
+          - '80:80'
+        volumes:
+          -  ./src/plugins:/var/www/tml/wp-content/plugins
+          - ./src/themes:/var/www/html/wp-content/themes
+        links:
+          - db
+    
+    
+    
+   
